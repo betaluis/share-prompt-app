@@ -9,16 +9,16 @@ const Nav = () => {
     const isLogged = true;
 
     const [providers, setProviders] = useState(null);
-    const [toggleMenu, setToggleMenu] = useState(false);
+    const [toggleDropdown, setToggleDropdown] = useState(false);
 
-    useEffect(() => {
-        const setProviders = async () => {
-            const res = await getProviders();
-            setProviders(res);
-        }
+    // useEffect(() => {
+    //     const setProviders = async () => {
+    //         const res = await getProviders();
+    //         setProviders(res);
+    //     }
 
-        setProviders();
-    }, []);
+    //     setProviders();
+    // }, [providers]);
 
     return (
         <nav className="flex-between w-full mb-16 p-3">
@@ -79,9 +79,37 @@ const Nav = () => {
                             alt="profile"
                             width={37}
                             height={37}
-                            className="rounded-full"
-                            onClick={() => setToggleMenu((prev) => !prev)}
+                            className="rounded-full cursor-pointer"
+                            onClick={() => setToggleDropdown((prev) => !prev)}
                         />
+                        {toggleDropdown ? (
+                            <div className="dropdown">
+                                <Link
+                                    href="/profile"
+                                    onClick={() => setToggleDropdown(false)}
+                                    className="dropdown_link"
+                                >
+                                    My Profile
+                                </Link>
+                                <Link
+                                    href="/create-prompt"
+                                    onClick={() => setToggleDropdown(false)}
+                                    className="dropdown_link"
+                                >
+                                    Create
+                                </Link>
+                                <button 
+                                    onClick={() => {
+                                        setToggleDropdown(false);
+                                        signOut();
+                                    }} 
+                                    type="button"
+                                    className="mt-5 w-full black_btn"
+                                >
+                                    Sign Out
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
                 ) : 
                     <>
