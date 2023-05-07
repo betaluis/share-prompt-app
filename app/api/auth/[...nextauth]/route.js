@@ -10,38 +10,40 @@ const handler = NextAuth({
             clientSecret: process.env.GOOGLE_SECRET,
         }),
     ],
-    async session({ session }) {
-        try {
-            connectToDatabase();
-            const user = await User.findOne({ email: session.user.email });
-            if (user) {
-                session.user.username = user.username;
-                session.user.image = user.image;
-                session.user.id = user._id.toString();
+    callbacks: {
+        async session({ session }) {
+            try {
+                connectToDatabase();
+                const user = await User.findOne({ email: session.user.email });
+                if (user) {
+                    session.user.username = user.username;
+                    session.user.image = user.image;
+                    session.user.id = user._id.toString();
+                }
+                return session;
+            } catch (error) {
+                console.log(error);
+                return session;
             }
-            return session;
-        } catch (error) {
-            console.log(error);
-            return session;
-        }
-    },
-    async signIn({ profile }) {
-        try {
-            connectToDatabasea();
-            const userExists = await User.findOne({ email: profile.email });
-            if (!userExists) {
-                const user = await User.create({
-                    email: profile.email,
-                    username: profile.name.replace(/\s/g, "").toLowerCase(),
-                    image: profile.image,
-                });
+        },
+        async signIn({ profile }) {
+            try {
+                connectToDatabasea();
+                const userExists = await User.findOne({ email: profile.email });
+                if (!userExists) {
+                    const user = await User.create({
+                        email: profile.email,
+                        username: profile.name.replace(/\s/g, "").toLowerCase(),
+                        image: profile.image,
+                    });
 
-                return true;
+                    return true;
+                }
+            } catch (error) {
+                console.log(error);
+                return false;
             }
-        } catch (error) {
-            console.log(error);
-            return false;
-        }
+        },
     },
 });
 
