@@ -11,7 +11,19 @@ const handler = NextAuth({
         }),
     ],
     async session({ session }) {
-
+        try {
+            connectToDatabase();
+            const user = await User.findOne({ email: session.user.email });
+            if (user) {
+                session.user.username = user.username;
+                session.user.image = user.image;
+                session.user.id = user._id.toString();
+            }
+            return session;
+        } catch (error) {
+            console.log(error);
+            return session;
+        }
     },
     async signIn({ profile }) {
         try {
